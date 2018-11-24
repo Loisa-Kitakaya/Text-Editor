@@ -2,21 +2,27 @@
 
 # This is a program that will translate text from one language to another.
 # The program is written in python3.
-# It will use the following modules/libraries: Python-Microsoft-Translate-API | Goslate: Free Google Translate API | Tkinter
+# It will use the following modules/libraries: IBM Watson™ Language Translator | Tkinter
 # The program will work mainly with english to french and vice versa.
 
+import os
+import json
 import tkinter
-import goslate
 from tkinter import *
 import tkinter.messagebox
-from mstranslate import MSTranslate
+import tkinter.simpledialog
 import tkinter.filedialog as fdialog
+import tkinter.scrolledtext as scrolltextbox
+from watson_developer_cloud import LanguageTranslatorV3
 
-# gs = goslate.Goslate()
-# translatedText = gs.translate(text,'fr')
+# token-based Identity and Access Management (IAM) authentication
+language_translator = LanguageTranslatorV3(
 
-# kk = MSTranslate('client_id', 'client_secret')
-# print(kk.translate('你好', 'en'))
+    version='2018-05-01',
+    iam_apikey='-6-QG-NTBvcMI9RMbKPCHaFpXg4lKbQ9pQfq-BNSAprq',
+    url='https://gateway-wdc.watsonplatform.net/language-translator/api'
+
+)
 
 # creating a class to define window (GUI) properties
 class GUI_Window:
@@ -38,7 +44,7 @@ class GUI_Window:
 		sub_menu_1 = Menu(menu_bar)
 		menu_bar.add_cascade(label = "Options", menu = sub_menu_1)
 		# creating sub-menu "Options" commands'
-		sub_menu_1.add_command(label = "Open file", command = self.open_file)
+		sub_menu_1.add_command(label = "Edit file", command = self.open_file)
 		sub_menu_1.add_command(label = "Quit app", command = master.destroy)
 
 		# creating sub-menu "About"
@@ -68,28 +74,118 @@ class GUI_Window:
 		frame_103.pack(fill = "both", expand = 1, padx=5, pady=5)
 
 		# creating labels for the language sections
-		label_1 = Label(frame_001, text = "English")
-		label_2 = Label(frame_002, text = "French")
+		label_1 = Label(frame_001, text = "Input")
+		label_2 = Label(frame_002, text = "Output")
 
 		# displaying the labels
 		label_1.pack(side = LEFT)
 		label_2.pack(side = LEFT)
 
 		# creating entry fields
-		text_box_1 = Text(frame_101, bg = "white", height = 15)
-		text_box_2 = Text(frame_103, bg = "white", height = 15)
+		text_box_1 = Text(frame_101, bg = "white", height = 15, wrap = WORD, relief=SUNKEN)
+		text_box_2 = scrolltextbox.ScrolledText(frame_103, bg = "white", height = 15, wrap = WORD, relief=SUNKEN)
 
 		# displaying the entry fields
-		text_box_1.pack()
-		text_box_2.pack()
+		text_box_1.pack(fill = "both")
+		text_box_2.pack(fill = "both")
 
 		# creating the translate and clear buttons
-		button_1 = Button(frame_102, text = "Translate")
-		button_2 = Button(frame_102, text = "Clear")
+		button_1 = Button(frame_102, text = "Translate", relief = RAISED)
+		button_2 = Button(frame_102, text = "Clear", relief = RAISED)
+		button_3 = Button(frame_102, text = "Clear All", relief = RAISED)
+		button_4 = Button(frame_102, text = "Browse", relief = RAISED)
 
 		# displaying the buttons
-		button_1.pack(side = RIGHT, padx= 5)
+		button_4.pack(side = RIGHT, padx = 5)
+		button_1.pack(side = RIGHT, padx = 5)		
+		button_3.pack(side = RIGHT, padx = 5)
 		button_2.pack(side = RIGHT, padx = 5)
+
+		# defining the commands for the buttons
+
+		# command for the clear button
+		def clear(event):
+
+			# clearing the text box
+			text_box_1.delete('1.0', END)
+
+		# command for the clear all button
+		def clear_all(event):
+
+			# clearing all the text boxes
+			text_box_1.delete('1.0', END)
+			text_box_2.delete('1.0', END)
+
+		# command to get, translate and display text
+		def translate(event):
+
+			# getting the text
+			source_lang = text_box_1.get('1.0', END)
+
+			# translating the text
+
+			# checking if text box is empty or not: to determine if translation will take place
+			if len(text_box_1.get("1.0", "end-1c")) == 0:
+
+				tkinter.messagebox.showwarning("No input!", "Please provide text to be translated in the top text box.")
+
+			else:
+
+				while True:
+
+					# selecting the kind of language translation
+					lang = tkinter.simpledialog.askinteger("Select output language", "How do you want your translation? \n[1: English to French] \n[2: French to English]")
+
+					if lang == 1:
+
+						# english to french translation
+						translation = language_translator.translate(source_lang, model_id='en-fr').get_result()
+						translated_text = json.dumps(translation, indent=2, ensure_ascii=False)
+
+						# displaying the output
+						text_box_2.insert('1.0', translated_text)
+
+						break
+
+					elif lang == 2:
+
+						# french to english translation
+						translation = language_translator.translate(source_lang, model_id='fr-en').get_result()
+						translated_text = json.dumps(translation, indent=2, ensure_ascii=False)
+
+						# displaying the output
+						text_box_2.insert('1.0', translated_text)
+
+						break
+
+					else:
+
+						# warning to select correct/provided options
+						tkinter.messagebox.showwarning("Warning", "Please select the provided options, Other language translations will be available in future versions of Text Translator.")
+
+						continue
+
+		# command to browse for file to load
+		def browse(event):
+
+			# using fdialog
+			global file_to_open
+
+			# openig dialog box to open text file
+			self.file_to_open = fdialog.askopenfilename(initialdir = "/home", title = "Open to translate a text file", filetypes = (("text files", "*.txt"),("all files","*.*")))
+
+			# loading and displaying the file and it's content to text box 1
+
+			open_f = open(self.file_to_open, "r")
+			read_f = open_f.read()
+
+			text_box_1.insert('1.0', read_f)
+
+		# binding the buttons to the commands
+		button_2.bind("<Button-1>", clear)		
+		button_3.bind("<Button-1>", clear_all)
+		button_1.bind("<Button-1>", translate)
+		button_4.bind("<Button-1>", browse)
 
 		# creating the status bar
 		status_bar = Label(master, text = "Version 1.0", bd = 1, relief = SUNKEN, anchor = W)
@@ -105,7 +201,11 @@ class GUI_Window:
 		# using fdialog
 		global file_to_open
 
-		self.file_to_open = fdialog.askopenfilename(initialdir = "/home", title = "Open a text file", filetypes = (("text files", "*.txt"),("all files","*.*")))
+		# openig dialog box to open text file
+		self.file_to_open = fdialog.askopenfilename(initialdir = "/home", title = "Open to edit a text file", filetypes = (("text files", "*.txt"),("all files","*.*")))
+
+		# loading and displaying the file and it's content to text box 1
+		os.system("gvim " + self.file_to_open)
 
 	# commands for "About"
 	def about(self):
