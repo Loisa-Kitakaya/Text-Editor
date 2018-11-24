@@ -82,42 +82,30 @@ class GUI_Window:
 		label_2.pack(side = LEFT)
 
 		# creating entry fields
-		text_box_1 = Text(frame_101, bg = "white", height = 15, wrap = WORD, relief=SUNKEN)
+		text_box_1 = scrolltextbox.ScrolledText(frame_101, bg = "white", height = 15, wrap = WORD, relief=SUNKEN)
 		text_box_2 = scrolltextbox.ScrolledText(frame_103, bg = "white", height = 15, wrap = WORD, relief=SUNKEN)
 
 		# displaying the entry fields
 		text_box_1.pack(fill = "both")
 		text_box_2.pack(fill = "both")
 
-		# creating the translate and clear buttons
-		button_1 = Button(frame_102, text = "Translate", relief = RAISED)
-		button_2 = Button(frame_102, text = "Clear", relief = RAISED)
-		button_3 = Button(frame_102, text = "Clear All", relief = RAISED)
-		button_4 = Button(frame_102, text = "Browse", relief = RAISED)
-
-		# displaying the buttons
-		button_4.pack(side = RIGHT, padx = 5)
-		button_1.pack(side = RIGHT, padx = 5)		
-		button_3.pack(side = RIGHT, padx = 5)
-		button_2.pack(side = RIGHT, padx = 5)
-
 		# defining the commands for the buttons
 
 		# command for the clear button
-		def clear(event):
+		def clear():
 
 			# clearing the text box
 			text_box_1.delete('1.0', END)
 
 		# command for the clear all button
-		def clear_all(event):
+		def clear_all():
 
 			# clearing all the text boxes
 			text_box_1.delete('1.0', END)
 			text_box_2.delete('1.0', END)
 
 		# command to get, translate and display text
-		def translate(event):
+		def translate():
 
 			# getting the text
 			source_lang = text_box_1.get('1.0', END)
@@ -143,7 +131,15 @@ class GUI_Window:
 						translated_text = json.dumps(translation, indent=2, ensure_ascii=False)
 
 						# displaying the output
+						text_box_2.insert('1.0', "\n*******************************************************************************")
+
+						text_box_2.insert('1.0', "\n", translated_text)
+
 						text_box_2.insert('1.0', translated_text)
+
+						text_box_2.insert('1.0', "\n", translated_text)
+
+						text_box_2.insert('1.0', "\n*******************************************************************************")
 
 						break
 
@@ -154,7 +150,15 @@ class GUI_Window:
 						translated_text = json.dumps(translation, indent=2, ensure_ascii=False)
 
 						# displaying the output
+						text_box_2.insert('1.0', "\n*******************************************************************************")
+
+						text_box_2.insert('1.0', "\n", translated_text)
+
 						text_box_2.insert('1.0', translated_text)
+
+						text_box_2.insert('1.0', "\n", translated_text)
+
+						text_box_2.insert('1.0', "\n*******************************************************************************")
 
 						break
 
@@ -166,7 +170,7 @@ class GUI_Window:
 						continue
 
 		# command to browse for file to load
-		def browse(event):
+		def browse():
 
 			# using fdialog
 			global file_to_open
@@ -181,17 +185,25 @@ class GUI_Window:
 
 			text_box_1.insert('1.0', read_f)
 
-		# binding the buttons to the commands
-		button_2.bind("<Button-1>", clear)		
-		button_3.bind("<Button-1>", clear_all)
-		button_1.bind("<Button-1>", translate)
-		button_4.bind("<Button-1>", browse)
+		# creating the translate and clear buttons
+		button_1 = Button(frame_102, text = "Translate", relief = RAISED, command = translate)
+		button_2 = Button(frame_102, text = "Clear", relief = RAISED, command = clear)
+		button_3 = Button(frame_102, text = "Clear All", relief = RAISED, command = clear_all)
+		button_4 = Button(frame_102, text = "Browse", relief = RAISED, command = browse)
+
+		# displaying the buttons
+		button_4.pack(side = RIGHT, padx = 5)
+		button_1.pack(side = RIGHT, padx = 5)		
+		button_3.pack(side = RIGHT, padx = 5)
+		button_2.pack(side = RIGHT, padx = 5)
 
 		# creating the status bar
-		status_bar = Label(master, text = "Version 1.0", bd = 1, relief = SUNKEN, anchor = W)
+		status_bar = Frame(master)
+		status = Label(status_bar, text = "Version 1.0", bd = 1, relief = SUNKEN, anchor = E)
 
 		# displaying the status bar
-		status_bar.pack(side = BOTTOM, fill = "x")
+		status_bar.pack(side = BOTTOM, fill = "x", padx = 5)
+		status.pack(side = BOTTOM, fill = "x")
 
 	# defining the commands for the menu bar
 
@@ -211,7 +223,7 @@ class GUI_Window:
 	def about(self):
 
 		# using messagebox
-		tkinter.messagebox.showinfo("About Text Translater 1.0", "*********** ABOUT *********** \n\nText Translater 1.0 is a software that translates your test from one human language to another e.g. eng --> fr \n\n********** AUTHOR ********** \n\nFreedom Loisa Kitakaya")
+		tkinter.messagebox.showinfo("About Text Translater 1.0", "*********** ABOUT *********** \n\nText Translater 1.0 is a software that translates your test from one human language to another e.g. en --to--> fr \n\n********** AUTHOR ********** \n\nFreedom Loisa Kitakaya")
 
 GUI =Tk()
 
