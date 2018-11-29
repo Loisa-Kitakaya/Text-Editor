@@ -1,4 +1,4 @@
-# Text-Editor
+# Text-Translator
 
 Download or clone repository.
 
