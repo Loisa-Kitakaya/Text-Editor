@@ -8,8 +8,7 @@ Install required dependancies and libraries.
 
 Run the executable file: 
    For Linux os go to directory: Text Translator/dist/Linux
-   open terminal
-   # make program executable by:
-      chmod +x <program name>
+   # open terminal and make program executable by running the command:
+      chmod +x Text_Translator
   
    For Windows os go to directory: Text Translator/dist/Windows
