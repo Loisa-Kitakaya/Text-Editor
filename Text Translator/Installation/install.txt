@@ -1,0 +1,44 @@
+for the program to run you must have the following installed:
+
+Linux OSs:
+1) Pytho3x
+   
+   Install python by running the foollowing command in terminal:
+
+   sudo apt-get install python3
+
+2) Tkinter python libraries
+
+   Install tkinter libraries by running the following commands in terminal:
+
+   sudo apt-get install python3-tk
+
+3) pip3
+
+   Install pip3 by running the foollowing command in terminal:
+
+   sudo apt-get install python3-pip
+
+4) IBM Watson™ Language Translator libraries
+
+   Install IBM Watson™ Language Translator libraries by running the foollowing command in terminal:
+
+   sudo pip3 install --upgrade "watson-developer-cloud>=2.4.1"
+
+
+
+Windows OS:
+1) Python3x
+
+   Install python by downloading installer file in the provided link:
+
+   32-bit: https://www.python.org/ftp/python/3.6.7/python-3.6.7.exe
+   64-bit: https://www.python.org/ftp/python/3.6.7/python-3.6.7-amd64.exe
+
+2) IBM Watson™ Language Translator libraries
+
+   Install IBM Watson™ Language Translator libraries by running the foollowing command in terminal:
+
+   sudo pip3 install --upgrade "watson-developer-cloud>=2.4.1"
+
+Enjoy!
